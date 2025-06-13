@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Home, FileText, Shield, CheckCircle, AlertCircle, Camera, Fingerprint, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, X, Check, User, MapPin, DollarSign, Calendar, Eye, Building, ArrowRight, Loader, CreditCard, Wallet } from 'lucide-react';
+import { FileText, Shield, CheckCircle, AlertCircle, Camera, Fingerprint, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, User, MapPin, DollarSign, Building, ArrowRight, Loader, CreditCard, Wallet } from 'lucide-react';
 
 const PropLockPrototype = () => {
   const [currentScreen, setCurrentScreen] = useState('dashboard');
-  const [biometricVerified, setBiometricVerified] = useState(false);
-  const [documentsUploaded, setDocumentsUploaded] = useState(false);
   const [transferProgress, setTransferProgress] = useState(0);
-  const [showNotification, setShowNotification] = useState(false);
 
   // Simulate transfer progress
   useEffect(() => {
@@ -29,9 +26,9 @@ const PropLockPrototype = () => {
     dashboard: <DashboardScreen setCurrentScreen={setCurrentScreen} />,
     propertyDetails: <PropertyDetailsScreen setCurrentScreen={setCurrentScreen} />,
     transferInit: <TransferInitScreen setCurrentScreen={setCurrentScreen} />,
-    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} setBiometricVerified={setBiometricVerified} />,
+    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} />,
     recipient: <RecipientScreen setCurrentScreen={setCurrentScreen} />,
-    documents: <DocumentsScreen setCurrentScreen={setCurrentScreen} setDocumentsUploaded={setDocumentsUploaded} />,
+    documents: <DocumentsScreen setCurrentScreen={setCurrentScreen} />,
     summary: <TransferSummaryScreen setCurrentScreen={setCurrentScreen} />,
     governmentFees: <GovernmentFeesScreen setCurrentScreen={setCurrentScreen} />,
     signature: <SignatureScreen setCurrentScreen={setCurrentScreen} />,
@@ -335,7 +332,7 @@ const TransferInitScreen = ({ setCurrentScreen }) => (
   </div>
 );
 
-const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
+const BiometricScreen = ({ setCurrentScreen }) => {
   const [scanning, setScanning] = useState(false);
   const [verified, setVerified] = useState(false);
 
@@ -343,7 +340,6 @@ const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
     setScanning(true);
     setTimeout(() => {
       setVerified(true);
-      setBiometricVerified(true);
       setTimeout(() => setCurrentScreen('recipient'), 1500);
     }, 3000);
   };
@@ -480,7 +476,7 @@ const RecipientScreen = ({ setCurrentScreen }) => (
   </div>
 );
 
-const DocumentsScreen = ({ setCurrentScreen, setDocumentsUploaded }) => {
+const DocumentsScreen = ({ setCurrentScreen }) => {
   const [uploadStatus, setUploadStatus] = useState({
     deed: true,
     tax: true,
@@ -548,7 +544,6 @@ const DocumentsScreen = ({ setCurrentScreen, setDocumentsUploaded }) => {
 
       <button 
         onClick={() => {
-          setDocumentsUploaded(true);
           setCurrentScreen('summary');
         }}
         className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all"
