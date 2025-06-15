@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Home, FileText, Shield, CheckCircle, AlertCircle, Camera, Fingerprint, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, X, Check, User, MapPin, DollarSign, Calendar, Eye, Building, ArrowRight, Loader, CreditCard, Wallet, Bell } from 'lucide-react';
+import { FileText, Shield, CheckCircle, AlertCircle, Camera, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, Check, User, MapPin, DollarSign, Building, ArrowRight, Loader, CreditCard, Wallet, Bell } from 'lucide-react';
 
 const PropLockPrototype = () => {
   const [currentScreen, setCurrentScreen] = useState('dashboard');
-  const [biometricVerified, setBiometricVerified] = useState(false);
-  const [documentsUploaded, setDocumentsUploaded] = useState(false);
+  const [setBiometricVerified] = useState(false);
+  const [setDocumentsUploaded] = useState(false);
   const [transferProgress, setTransferProgress] = useState(0);
-  const [showNotification, setShowNotification] = useState(false);
 
   // Simulate transfer progress
   useEffect(() => {
@@ -339,7 +338,7 @@ const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
   const [scanning, setScanning] = useState(false);
   const [verified, setVerified] = useState(false);
   const [faceComplete, setFaceComplete] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
+  const [setOtpSent] = useState(false);
   const [currentStep, setCurrentStep] = useState('face'); // face, otp, password
 
   const handleVerification = () => {
