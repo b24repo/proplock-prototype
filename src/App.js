@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Shield, CheckCircle, AlertCircle, Camera, Fingerprint, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, User, MapPin, DollarSign, Building, ArrowRight, Loader, CreditCard, Wallet } from 'lucide-react';
+import { Home, FileText, Shield, CheckCircle, AlertCircle, Camera, Fingerprint, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, X, Check, User, MapPin, DollarSign, Calendar, Eye, Building, ArrowRight, Loader, CreditCard, Wallet, Bell } from 'lucide-react';
 
 const PropLockPrototype = () => {
   const [currentScreen, setCurrentScreen] = useState('dashboard');
+  const [biometricVerified, setBiometricVerified] = useState(false);
+  const [documentsUploaded, setDocumentsUploaded] = useState(false);
   const [transferProgress, setTransferProgress] = useState(0);
+  const [showNotification, setShowNotification] = useState(false);
 
   // Simulate transfer progress
   useEffect(() => {
@@ -26,9 +29,9 @@ const PropLockPrototype = () => {
     dashboard: <DashboardScreen setCurrentScreen={setCurrentScreen} />,
     propertyDetails: <PropertyDetailsScreen setCurrentScreen={setCurrentScreen} />,
     transferInit: <TransferInitScreen setCurrentScreen={setCurrentScreen} />,
-    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} />,
+    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} setBiometricVerified={setBiometricVerified} />,
     recipient: <RecipientScreen setCurrentScreen={setCurrentScreen} />,
-    documents: <DocumentsScreen setCurrentScreen={setCurrentScreen} />,
+    documents: <DocumentsScreen setCurrentScreen={setCurrentScreen} setDocumentsUploaded={setDocumentsUploaded} />,
     summary: <TransferSummaryScreen setCurrentScreen={setCurrentScreen} />,
     governmentFees: <GovernmentFeesScreen setCurrentScreen={setCurrentScreen} />,
     signature: <SignatureScreen setCurrentScreen={setCurrentScreen} />,
@@ -332,65 +335,200 @@ const TransferInitScreen = ({ setCurrentScreen }) => (
   </div>
 );
 
-const BiometricScreen = ({ setCurrentScreen }) => {
+const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
   const [scanning, setScanning] = useState(false);
   const [verified, setVerified] = useState(false);
+  const [faceComplete, setFaceComplete] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [currentStep, setCurrentStep] = useState('face'); // face, otp, password
 
   const handleVerification = () => {
     setScanning(true);
     setTimeout(() => {
-      setVerified(true);
-      setTimeout(() => setCurrentScreen('recipient'), 1500);
+      setFaceComplete(true);
+      setScanning(false);
+      setCurrentStep('otp');
+      setOtpSent(true);
     }, 3000);
   };
 
+  const handleOTPVerification = () => {
+    setCurrentStep('password');
+  };
+
+  const handlePasswordVerification = () => {
+    setVerified(true);
+    setBiometricVerified(true);
+    setTimeout(() => setCurrentScreen('recipient'), 1500);
+  };
+
   return (
-    <div className="space-y-6 text-center">
-      <div>
-        <h2 className="text-2xl font-bold text-white mb-2">Verify Your Identity</h2>
-        <p className="text-gray-400">Complete biometric verification to proceed</p>
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-white mb-2">Multi-Factor Authentication</h2>
+        <p className="text-gray-400">Complete all security steps to proceed with this high-value transfer</p>
       </div>
 
-      <div className="max-w-md mx-auto space-y-6">
-        <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl p-8 border border-purple-500/30">
-          <div className="relative">
-            <div className={`w-48 h-48 mx-auto rounded-full border-4 ${verified ? 'border-green-500' : 'border-purple-500'} flex items-center justify-center transition-colors`}>
-              {verified ? (
-                <CheckCircle className="w-24 h-24 text-green-400" />
-              ) : scanning ? (
-                <div className="relative">
-                  <Camera className="w-24 h-24 text-purple-400" />
-                  <div className="absolute inset-0 w-48 h-48 rounded-full border-4 border-purple-500 border-t-transparent animate-spin"></div>
-                </div>
-              ) : (
-                <Camera className="w-24 h-24 text-purple-400" />
-              )}
+      {/* Progress Steps */}
+      <div className="flex justify-center mb-8">
+        <div className="flex items-center space-x-4">
+          <div className={`flex items-center ${currentStep === 'face' ? 'text-purple-400' : faceComplete ? 'text-green-400' : 'text-gray-500'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${faceComplete ? 'bg-green-500' : currentStep === 'face' ? 'bg-purple-500' : 'bg-gray-600'}`}>
+              {faceComplete ? <Check className="w-4 h-4 text-white" /> : '1'}
             </div>
+            <span className="ml-2 text-sm">Face Scan</span>
           </div>
-          
-          <div className="mt-6">
-            {verified ? (
-              <div className="text-green-400">
-                <p className="font-semibold text-lg">Identity Verified!</p>
-                <p className="text-sm text-gray-400 mt-1">Redirecting...</p>
-              </div>
-            ) : scanning ? (
-              <p className="text-purple-400">Scanning face...</p>
-            ) : (
-              <button 
-                onClick={handleVerification}
-                className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
-              >
-                Start Face Scan
-              </button>
-            )}
+          <div className="w-8 h-px bg-gray-600"></div>
+          <div className={`flex items-center ${currentStep === 'otp' ? 'text-purple-400' : currentStep === 'password' ? 'text-green-400' : 'text-gray-500'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep === 'password' ? 'bg-green-500' : currentStep === 'otp' ? 'bg-purple-500' : 'bg-gray-600'}`}>
+              {currentStep === 'password' ? <Check className="w-4 h-4 text-white" /> : '2'}
+            </div>
+            <span className="ml-2 text-sm">OTP</span>
+          </div>
+          <div className="w-8 h-px bg-gray-600"></div>
+          <div className={`flex items-center ${currentStep === 'password' ? 'text-purple-400' : verified ? 'text-green-400' : 'text-gray-500'}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${verified ? 'bg-green-500' : currentStep === 'password' ? 'bg-purple-500' : 'bg-gray-600'}`}>
+              {verified ? <Check className="w-4 h-4 text-white" /> : '3'}
+            </div>
+            <span className="ml-2 text-sm">Password</span>
           </div>
         </div>
+      </div>
 
-        <div className="bg-white/5 rounded-xl p-6 border border-gray-700">
-          <Fingerprint className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-          <p className="text-gray-300 font-semibold">Alternative Verification</p>
-          <p className="text-xs text-gray-400 mt-1">Use fingerprint if face scan fails</p>
+      <div className="max-w-md mx-auto">
+        {/* Face Recognition Step */}
+        {currentStep === 'face' && (
+          <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl p-8 border border-purple-500/30">
+            <div className="text-center">
+              <div className={`w-32 h-32 mx-auto rounded-full border-4 ${faceComplete ? 'border-green-500' : 'border-purple-500'} flex items-center justify-center transition-colors mb-6`}>
+                {faceComplete ? (
+                  <CheckCircle className="w-16 h-16 text-green-400" />
+                ) : scanning ? (
+                  <div className="relative">
+                    <Camera className="w-16 h-16 text-purple-400" />
+                    <div className="absolute inset-0 w-32 h-32 rounded-full border-4 border-purple-500 border-t-transparent animate-spin"></div>
+                  </div>
+                ) : (
+                  <Camera className="w-16 h-16 text-purple-400" />
+                )}
+              </div>
+              
+              <div>
+                {faceComplete ? (
+                  <div className="text-green-400">
+                    <p className="font-semibold text-lg">Face Verified!</p>
+                    <p className="text-sm text-gray-400 mt-1">Step 1 of 3 complete</p>
+                  </div>
+                ) : scanning ? (
+                  <p className="text-purple-400">Scanning face...</p>
+                ) : (
+                  <button 
+                    onClick={handleVerification}
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+                  >
+                    Start Face Scan
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* OTP Step */}
+        {currentStep === 'otp' && (
+          <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl p-8 border border-purple-500/30">
+            <div className="text-center mb-6">
+              <Shield className="w-16 h-16 text-purple-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">Enter Verification Code</h3>
+              <p className="text-sm text-gray-400">We've sent a 6-digit code to your phone</p>
+              <p className="text-xs text-gray-500 mt-1">+1 (555) ***-**89</p>
+            </div>
+            
+            <div className="flex justify-center gap-2 mb-6">
+              {[1,2,3,4,5,6].map((i) => (
+                <input
+                  key={i}
+                  type="text"
+                  maxLength="1"
+                  className="w-12 h-12 bg-white/10 border border-gray-600 rounded-lg text-center text-white text-xl focus:border-purple-500 focus:outline-none"
+                  defaultValue={i <= 4 ? Math.floor(Math.random() * 10) : ''}
+                />
+              ))}
+            </div>
+
+            <button 
+              onClick={handleOTPVerification}
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-xl transition-colors"
+            >
+              Verify Code
+            </button>
+            
+            <p className="text-center text-sm text-gray-400 mt-4">
+              Didn't receive code? <a href="#" className="text-purple-400">Resend</a>
+            </p>
+          </div>
+        )}
+
+        {/* Password Step */}
+        {currentStep === 'password' && (
+          <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl p-8 border border-purple-500/30">
+            <div className="text-center mb-6">
+              <Key className="w-16 h-16 text-purple-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-white mb-2">Enter PropLock Master Password</h3>
+              <p className="text-sm text-gray-400">Final security step for this $850,000 transfer</p>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm text-gray-400 block mb-2">Master Password</label>
+                <input
+                  type="password"
+                  className="w-full bg-white/10 border border-gray-600 rounded-lg px-4 py-3 text-white focus:border-purple-500 focus:outline-none"
+                  placeholder="Enter your master password"
+                  defaultValue="••••••••••••"
+                />
+              </div>
+
+              <div className="bg-yellow-500/10 rounded-lg p-3 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-yellow-400 mt-0.5" />
+                <p className="text-xs text-yellow-400">
+                  High-value transaction: All three authentication factors required
+                </p>
+              </div>
+
+              <button 
+                onClick={handlePasswordVerification}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-xl transition-colors"
+              >
+                Complete Authentication
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Success State */}
+        {verified && (
+          <div className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-2xl p-8 border border-green-500/30 text-center">
+            <CheckCircle className="w-16 h-16 text-green-400 mx-auto mb-4" />
+            <p className="text-xl font-semibold text-white">All Security Checks Passed!</p>
+            <p className="text-sm text-gray-400 mt-2">Redirecting to recipient details...</p>
+          </div>
+        )}
+      </div>
+
+      {/* Security Notice */}
+      <div className="max-w-md mx-auto mt-6">
+        <div className="bg-white/5 rounded-xl p-4 border border-gray-700">
+          <div className="flex items-start gap-3">
+            <Shield className="w-5 h-5 text-blue-400 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-white">Why Multiple Steps?</p>
+              <p className="text-xs text-gray-400 mt-1">
+                For transfers above $100,000, PropLock requires three-factor authentication 
+                to ensure maximum security and prevent fraud.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -476,7 +614,7 @@ const RecipientScreen = ({ setCurrentScreen }) => (
   </div>
 );
 
-const DocumentsScreen = ({ setCurrentScreen }) => {
+const DocumentsScreen = ({ setCurrentScreen, setDocumentsUploaded }) => {
   const [uploadStatus, setUploadStatus] = useState({
     deed: true,
     tax: true,
@@ -544,6 +682,7 @@ const DocumentsScreen = ({ setCurrentScreen }) => {
 
       <button 
         onClick={() => {
+          setDocumentsUploaded(true);
           setCurrentScreen('summary');
         }}
         className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all"
@@ -928,73 +1067,157 @@ const ContractScreen = ({ setCurrentScreen }) => (
   </div>
 );
 
-const RecipientNotificationScreen = ({ setCurrentScreen }) => (
-  <div className="space-y-6">
-    <div className="bg-green-500/20 rounded-xl p-4 border border-green-500/30 mb-6">
-      <p className="text-green-400 font-semibold text-center">
-        Viewing as: David Mitchell (Recipient)
-      </p>
-    </div>
+const RecipientNotificationScreen = ({ setCurrentScreen }) => {
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
-    <div className="text-center mb-6">
-      <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-        <Bell className="w-8 h-8 text-white" />
-      </div>
-      <h2 className="text-2xl font-bold text-white mb-2">Property Transfer Request</h2>
-      <p className="text-gray-400">You have received a property transfer</p>
-    </div>
+  const handleAccept = () => {
+    setShowConfirmation(true);
+  };
 
-    <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl p-6 border border-purple-500/30">
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-          <User className="w-6 h-6 text-white" />
-        </div>
-        <div>
-          <p className="text-gray-400 text-sm">From</p>
-          <p className="text-white font-semibold text-lg">Sarah Mitchell</p>
-        </div>
+  const handleFinalConfirm = () => {
+    setCurrentScreen('processing');
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-green-500/20 rounded-xl p-4 border border-green-500/30 mb-6">
+        <p className="text-green-400 font-semibold text-center">
+          Viewing as: David Mitchell (Recipient)
+        </p>
       </div>
 
-      <div className="space-y-4">
-        <div>
-          <p className="text-sm text-gray-400">Property</p>
-          <p className="text-white font-semibold">Sunset Boulevard Apartment</p>
-          <p className="text-gray-400 text-sm">Los Angeles, CA 90028</p>
+      <div className="text-center mb-6">
+        <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+          <Bell className="w-8 h-8 text-white" />
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-sm text-gray-400">Value</p>
-            <p className="text-white font-semibold">$850,000</p>
+        <h2 className="text-2xl font-bold text-white mb-2">Property Transfer Request</h2>
+        <p className="text-gray-400">You have received a property transfer</p>
+      </div>
+
+      <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl p-6 border border-purple-500/30">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+            <User className="w-6 h-6 text-white" />
           </div>
           <div>
-            <p className="text-sm text-gray-400">Transfer Type</p>
-            <p className="text-white font-semibold">Gift</p>
+            <p className="text-gray-400 text-sm">From</p>
+            <p className="text-white font-semibold text-lg">Sarah Mitchell</p>
           </div>
         </div>
-        <div className="bg-black/30 rounded-lg p-3">
-          <p className="text-sm text-gray-400">Message from Sender</p>
-          <p className="text-gray-300 text-sm mt-1">
-            "David, I'm transferring the Sunset Boulevard apartment to you as discussed. 
-            This is part of our family estate planning."
-          </p>
+
+        <div className="space-y-4">
+          <div>
+            <p className="text-sm text-gray-400">Property</p>
+            <p className="text-white font-semibold">Sunset Boulevard Apartment</p>
+            <p className="text-gray-400 text-sm">Los Angeles, CA 90028</p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-400">Value</p>
+              <p className="text-white font-semibold">$850,000</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Transfer Type</p>
+              <p className="text-white font-semibold">Gift</p>
+            </div>
+          </div>
+          <div className="bg-black/30 rounded-lg p-3">
+            <p className="text-sm text-gray-400">Message from Sender</p>
+            <p className="text-gray-300 text-sm mt-1">
+              "David, I'm transferring the Sunset Boulevard apartment to you as discussed. 
+              This is part of our family estate planning."
+            </p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div className="flex gap-4">
-      <button className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-4 rounded-xl transition-colors">
-        Decline
-      </button>
-      <button 
-        onClick={() => setCurrentScreen('processing')}
-        className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all flex items-center justify-center gap-2"
-      >
-        <CheckCircle className="w-5 h-5" />
-        Verify & Accept
-      </button>
+      <div className="flex gap-4">
+        <button className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-4 rounded-xl transition-colors">
+          Decline
+        </button>
+        <button 
+          onClick={handleAccept}
+          className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all flex items-center justify-center gap-2"
+        >
+          <CheckCircle className="w-5 h-5" />
+          Verify & Accept
+        </button>
+      </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-slate-900 to-purple-900 rounded-2xl p-8 max-w-md w-full border border-purple-500/30">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Confirm Transaction</h3>
+              <p className="text-gray-400">Please review and confirm this property transfer</p>
+            </div>
+
+            <div className="bg-white/5 rounded-xl p-6 space-y-4 mb-6 border border-gray-700">
+              <div className="flex justify-between items-center">
+                <p className="text-gray-400">Property</p>
+                <p className="text-white font-semibold">Sunset Boulevard Apt</p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-400">From</p>
+                <p className="text-white font-semibold">Sarah Mitchell</p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-400">To</p>
+                <p className="text-white font-semibold">David Mitchell</p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-400">Value</p>
+                <p className="text-white font-semibold">$850,000</p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-400">Transfer Type</p>
+                <p className="text-white font-semibold">Gift Transfer</p>
+              </div>
+              <div className="border-t border-gray-700 pt-4">
+                <div className="flex justify-between items-center">
+                  <p className="text-gray-400">Total Fees Paid</p>
+                  <p className="text-purple-400 font-semibold">$9,150</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-yellow-500/10 rounded-xl p-4 border border-yellow-500/30 mb-6">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-yellow-400 mt-0.5" />
+                <div>
+                  <p className="text-yellow-400 font-semibold text-sm">Final Confirmation Required</p>
+                  <p className="text-xs text-gray-300 mt-1">
+                    This action is irreversible. Once confirmed, the property ownership will be 
+                    permanently transferred and recorded on the blockchain.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <button 
+                onClick={() => setShowConfirmation(false)}
+                className="flex-1 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleFinalConfirm}
+                className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold py-3 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all"
+              >
+                Confirm Transfer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  </div>
-);
+  );
+};
 
 const ProcessingScreen = ({ progress }) => (
   <div className="flex flex-col items-center justify-center min-h-[500px] space-y-6">
