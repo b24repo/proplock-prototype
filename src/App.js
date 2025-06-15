@@ -1340,6 +1340,7 @@ const CustomBell = ({ className }) => (
 // App wrapper component
 function App() {
   return <PropLockPrototype />;
+    <CustomBell className="w-6 h-6 text-gray-500" />
 }
 
 export default App;
