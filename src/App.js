@@ -3,8 +3,6 @@ import { FileText, Shield, CheckCircle, AlertCircle, Camera, Upload, FileCheck, 
 
 const PropLockPrototype = () => {
   const [currentScreen, setCurrentScreen] = useState('dashboard');
-  const [biometricVerified, setBiometricVerified] = useState(false);
-  const [documentsUploaded, setDocumentsUploaded] = useState(false);
   const [transferProgress, setTransferProgress] = useState(0);
 
   // Simulate transfer progress
@@ -28,9 +26,9 @@ const PropLockPrototype = () => {
     dashboard: <DashboardScreen setCurrentScreen={setCurrentScreen} />,
     propertyDetails: <PropertyDetailsScreen setCurrentScreen={setCurrentScreen} />,
     transferInit: <TransferInitScreen setCurrentScreen={setCurrentScreen} />,
-    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} setBiometricVerified={setBiometricVerified} />,
+    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} />,
     recipient: <RecipientScreen setCurrentScreen={setCurrentScreen} />,
-    documents: <DocumentsScreen setCurrentScreen={setCurrentScreen} setDocumentsUploaded={setDocumentsUploaded} />,
+    documents: <DocumentsScreen setCurrentScreen={setCurrentScreen} />,
     summary: <TransferSummaryScreen setCurrentScreen={setCurrentScreen} />,
     governmentFees: <GovernmentFeesScreen setCurrentScreen={setCurrentScreen} />,
     signature: <SignatureScreen setCurrentScreen={setCurrentScreen} />,
@@ -334,11 +332,10 @@ const TransferInitScreen = ({ setCurrentScreen }) => (
   </div>
 );
 
-const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
+const BiometricScreen = ({ setCurrentScreen }) => {
   const [scanning, setScanning] = useState(false);
   const [verified, setVerified] = useState(false);
   const [faceComplete, setFaceComplete] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
   const [currentStep, setCurrentStep] = useState('face'); // face, otp, password
 
   const handleVerification = () => {
@@ -347,7 +344,6 @@ const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
       setFaceComplete(true);
       setScanning(false);
       setCurrentStep('otp');
-      setOtpSent(true);
     }, 3000);
   };
 
@@ -357,7 +353,6 @@ const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
 
   const handlePasswordVerification = () => {
     setVerified(true);
-    setBiometricVerified(true);
     setTimeout(() => setCurrentScreen('recipient'), 1500);
   };
 
@@ -613,7 +608,7 @@ const RecipientScreen = ({ setCurrentScreen }) => (
   </div>
 );
 
-const DocumentsScreen = ({ setCurrentScreen, setDocumentsUploaded }) => {
+const DocumentsScreen = ({ setCurrentScreen }) => {
   const [uploadStatus, setUploadStatus] = useState({
     deed: true,
     tax: true,
@@ -680,10 +675,7 @@ const DocumentsScreen = ({ setCurrentScreen, setDocumentsUploaded }) => {
       </div>
 
       <button 
-        onClick={() => {
-          setDocumentsUploaded(true);
-          setCurrentScreen('summary');
-        }}
+        onClick={() => setCurrentScreen('summary')}
         className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all"
       >
         Review Transfer Summary
