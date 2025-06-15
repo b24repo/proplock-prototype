@@ -466,8 +466,15 @@ const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
             </button>
             
             <p className="text-center text-sm text-gray-400 mt-4">
-              Didn't receive code? <a href="#" className="text-purple-400">Resend</a>
-            </p>
+  Didn't receive code? 
+  <button
+    type="button"
+    className="ml-1 text-purple-400 underline hover:text-purple-500 cursor-pointer"
+  >
+    Resend
+  </button>
+</p>
+
           </div>
         )}
 
