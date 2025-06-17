@@ -697,7 +697,7 @@ const PropLockPrototype = () => {
     );
   };
 
-  const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
+  const BiometricScreen = ({ setCurrentScreen }) => {
     const [currentStep, setCurrentStep] = useState('selection');
     const [selectedBiometric, setSelectedBiometric] = useState('');
     const [emergencyMode, setEmergencyMode] = useState(false);
@@ -717,7 +717,6 @@ const PropLockPrototype = () => {
         // Check if all required biometrics are verified (at least 2 out of 3)
         const verifiedCount = Object.values({ ...verificationSteps, [type]: true }).filter(v => v).length;
         if (verifiedCount >= 2) {
-          setBiometricVerified(true);
           setTimeout(() => setCurrentScreen('recipient'), 1500);
         } else {
           setCurrentStep('selection');
@@ -1274,7 +1273,7 @@ const PropLockPrototype = () => {
     dashboard: <DashboardScreen setCurrentScreen={setCurrentScreen} />,
     propertyDetails: <PropertyDetailsScreen setCurrentScreen={setCurrentScreen} />,
     transferInit: <TransferInitScreen setCurrentScreen={setCurrentScreen} />,
-    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} setBiometricVerified={setBiometricVerified} />,
+    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} />,
     recipient: <RecipientScreen setCurrentScreen={setCurrentScreen} />,
     governmentFees: <GovernmentFeesScreen setCurrentScreen={setCurrentScreen} />,
     processing: <ProcessingScreen progress={transferProgress} />,
