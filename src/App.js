@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Shield, CheckCircle, AlertCircle, Camera, FileCheck, Send, Clock, TrendingUp, Key, Users, ChevronRight, User, MapPin, DollarSign, Building, Building2, Loader, CreditCard, Wallet, Fingerprint, Eye, Wifi, Globe, Database, Link } from 'lucide-react';
+import { FileText, Shield, CheckCircle, AlertCircle, Camera, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, Check, User, MapPin, DollarSign, Building, ArrowRight, Loader, CreditCard, Wallet, Bell, Hospital, Fingerprint, Eye, Wifi, Globe, Database, Link } from 'lucide-react';
 
 const PropLockPrototype = () => {
   const [currentScreen, setCurrentScreen] = useState('dashboard');
+  const [biometricVerified, setBiometricVerified] = useState(false);
+  const [documentsUploaded, setDocumentsUploaded] = useState(false);
   const [transferProgress, setTransferProgress] = useState(0);
   const [selectedCountry, setSelectedCountry] = useState('US');
+  const [selectedProperty, setSelectedProperty] = useState(null);
 
   // Reset progress when returning to dashboard
   useEffect(() => {
     if (currentScreen === 'dashboard') {
       setTransferProgress(0);
+      setBiometricVerified(false);
     }
   }, [currentScreen]);
 
@@ -77,7 +81,10 @@ const PropLockPrototype = () => {
               </div>
               <div>
                 <h4 className="text-xl font-bold text-white">{property.name}</h4>
-                <p className="text-sm text-purple-300 font-mono">{property.proplockId}</p>
+                <p className="text-sm text-purple-300 font-mono flex items-center gap-2">
+                  <span className="text-lg">{property.flag}</span>
+                  {property.proplockId}
+                </p>
                 {property.nextOfKin && (
                   <p className="text-xs text-gray-400 mt-1">Next of Kin: {property.nextOfKin}</p>
                 )}
@@ -98,7 +105,7 @@ const PropLockPrototype = () => {
             </div>
             <div className="bg-black/20 rounded-lg p-2">
               <p className="text-gray-400 text-xs">Value</p>
-              <p className="text-green-400 font-semibold">${property.value}</p>
+              <p className="text-green-400 font-semibold">{property.currency}{parseInt(property.value).toLocaleString()}</p>
             </div>
             <div className="bg-black/20 rounded-lg p-2">
               <p className="text-gray-400 text-xs">Acquired</p>
@@ -133,53 +140,65 @@ const PropLockPrototype = () => {
     const properties = [
       {
         name: "Sunset Boulevard Apartment",
-        proplockId: "PLK-PROP-2024-8534",
+        proplockId: "US-PROP-2024-8534",
         location: "Los Angeles, CA",
+        country: "USA",
+        countryCode: "US",
+        flag: "🇺🇸",
         size: "1,250 sq ft",
-        value: "850,000",
+        value: "850000",
+        currency: "$",
         acquired: "Mar 15, 2019",
         previousOwner: "John Davidson (2015-2019)",
         nextOfKin: "David Mitchell (Son)",
-        gradient: "from-purple-900/80 to-pink-900/80",
-        iconGradient: "from-purple-600 to-pink-600",
-        borderColor: "border-purple-500/30",
+        gradient: "from-blue-900/80 to-red-900/80",
+        iconGradient: "from-blue-600 to-red-600",
+        borderColor: "border-blue-500/30",
         tags: [
           { label: "API Verified", color: "bg-green-500/20 text-green-400", apiConnected: true },
           { label: "Transferable", color: "bg-blue-500/20 text-blue-400", apiConnected: false }
         ]
       },
       {
-        name: "Miami Beach Condo",
-        proplockId: "PLK-PROP-2021-9847",
-        location: "Miami, FL",
-        size: "950 sq ft",
-        value: "720,000",
+        name: "Westminster Estate",
+        proplockId: "UK-PROP-2021-9847",
+        location: "London, England",
+        country: "UK",
+        countryCode: "UK",
+        flag: "🇬🇧",
+        size: "2,100 sq ft",
+        value: "1200000",
+        currency: "£",
         acquired: "Aug 12, 2021",
-        previousOwner: "Miami Real Estate LLC",
+        previousOwner: "British Properties LLC",
         nextOfKin: "Sarah Mitchell (Spouse)",
-        gradient: "from-blue-900/80 to-cyan-900/80",
-        iconGradient: "from-blue-600 to-cyan-600",
-        borderColor: "border-blue-500/30",
+        gradient: "from-blue-900/80 to-red-900/80",
+        iconGradient: "from-blue-600 to-red-600",
+        borderColor: "border-red-500/30",
         tags: [
           { label: "API Verified", color: "bg-green-500/20 text-green-400", apiConnected: true },
-          { label: "Loan Active", color: "bg-yellow-500/20 text-yellow-400", apiConnected: true }
+          { label: "Heritage Listed", color: "bg-purple-500/20 text-purple-400", apiConnected: true }
         ]
       },
       {
-        name: "Texas Ranch Property",
-        proplockId: "PLK-PROP-2020-6721",
-        location: "Austin, TX",
-        size: "2.5 acres",
-        value: "890,000",
+        name: "Tokyo Minato Residence",
+        proplockId: "JP-PROP-2020-6721",
+        location: "Tokyo, Japan",
+        country: "Japan",
+        countryCode: "JP",
+        flag: "🇯🇵",
+        size: "185 sqm",
+        value: "120000000",
+        currency: "¥",
         acquired: "Nov 3, 2020",
-        previousOwner: "Texas Land Holdings Inc",
+        previousOwner: "Tokyo Land Holdings Inc",
         nextOfKin: "Multiple (33.3% each child)",
-        gradient: "from-green-900/80 to-emerald-900/80",
-        iconGradient: "from-green-600 to-emerald-600",
-        borderColor: "border-green-500/30",
+        gradient: "from-red-900/80 to-white/10",
+        iconGradient: "from-red-600 to-pink-600",
+        borderColor: "border-red-500/30",
         tags: [
           { label: "API Verified", color: "bg-green-500/20 text-green-400", apiConnected: true },
-          { label: "Heritage", color: "bg-purple-500/20 text-purple-400", apiConnected: false }
+          { label: "Earthquake Certified", color: "bg-yellow-500/20 text-yellow-400", apiConnected: false }
         ]
       }
     ];
@@ -188,19 +207,29 @@ const PropLockPrototype = () => {
       <div className="space-y-6">
         {/* Country Selector */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-white">Your Digital Assets Portfolio</h2>
+          <h2 className="text-3xl font-bold text-white">Your Global Digital Assets Portfolio</h2>
           <div className="flex items-center gap-3">
             <Globe className="w-5 h-5 text-purple-400" />
-            <select 
-              value={selectedCountry}
-              onChange={(e) => setSelectedCountry(e.target.value)}
-              className="bg-white/10 border border-purple-500/30 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-400"
-            >
-              <option value="US">United States</option>
-              <option value="CN">China</option>
-              <option value="IN">India</option>
-              <option value="UK">United Kingdom</option>
-            </select>
+            <div className="text-sm text-gray-400">Properties across: 🇺🇸 USA • 🇬🇧 UK • 🇯🇵 Japan</div>
+          </div>
+        </div>
+        
+        {/* Signup Scenarios Info Box */}
+        <div className="bg-gradient-to-r from-purple-600/10 to-blue-600/10 rounded-xl p-4 border border-purple-500/30">
+          <h3 className="text-sm font-semibold text-purple-400 mb-2">PropLock Registration Scenarios:</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-300">
+            <div className="flex items-start gap-2">
+              <Hospital className="w-4 h-4 text-pink-400 mt-0.5" />
+              <div>
+                <span className="text-white font-semibold">Birth Registration:</span> Hospitals create PropLock ID for newborns upon birth certificate generation
+              </div>
+            </div>
+            <div className="flex items-start gap-2">
+              <User className="w-4 h-4 text-blue-400 mt-0.5" />
+              <div>
+                <span className="text-white font-semibold">Adult Signup:</span> Individual registration with government ID verification and biometric enrollment
+              </div>
+            </div>
           </div>
         </div>
         
@@ -209,16 +238,19 @@ const PropLockPrototype = () => {
             <Building className="w-8 h-8 text-purple-400 mb-3" />
             <p className="text-gray-400 text-sm">Total Properties</p>
             <p className="text-2xl font-bold text-white">3</p>
+            <p className="text-xs text-gray-400 mt-1">Across 3 Countries</p>
           </div>
           <div className="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-xl p-6 border border-blue-500/30">
             <TrendingUp className="w-8 h-8 text-blue-400 mb-3" />
             <p className="text-gray-400 text-sm">Portfolio Value</p>
-            <p className="text-2xl font-bold text-white">$2.4M</p>
+            <p className="text-2xl font-bold text-white">$3.97M</p>
+            <p className="text-xs text-gray-400 mt-1">Multi-currency holdings</p>
           </div>
           <div className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-xl p-6 border border-green-500/30">
             <Database className="w-8 h-8 text-green-400 mb-3" />
             <p className="text-gray-400 text-sm">API Connections</p>
-            <p className="text-2xl font-bold text-white">7 Active</p>
+            <p className="text-2xl font-bold text-white">12 Active</p>
+            <p className="text-xs text-gray-400 mt-1">3 Country Systems</p>
           </div>
         </div>
 
@@ -230,7 +262,10 @@ const PropLockPrototype = () => {
             <Property3DCard 
               key={index}
               property={property}
-              onClick={() => setCurrentScreen('propertyDetails')}
+              onClick={() => {
+                setSelectedProperty(property);
+                setCurrentScreen('propertyDetails');
+              }}
             />
           ))}
         </div>
@@ -245,7 +280,7 @@ const PropLockPrototype = () => {
               <p className="text-xs text-gray-400">Gift or sale to family</p>
             </div>
             <div className="bg-gradient-to-r from-red-600/10 to-orange-600/10 rounded-xl p-4 border border-red-500/30">
-              <Building2 className="w-6 h-6 text-red-400 mb-2" />
+              <Hospital className="w-6 h-6 text-red-400 mb-2" />
               <p className="text-white font-semibold text-sm">Hospital Death Certificate</p>
               <p className="text-xs text-gray-400">Auto-triggered transfer to next of kin</p>
             </div>
@@ -310,7 +345,7 @@ const PropLockPrototype = () => {
                 <p className="text-red-400 font-semibold text-sm">Government Enforcement</p>
                 <p className="text-xs text-gray-300 mt-1">
                   Properties not registered or transferred outside PropLock are 
-                  subject to confiscation as stolen goods.
+                  subject to confiscation as stolen goods. Government earns from all sales and purchase deals automatically.
                 </p>
               </div>
             </div>
@@ -320,116 +355,136 @@ const PropLockPrototype = () => {
     );
   };
 
-  const PropertyDetailsScreen = ({ setCurrentScreen }) => (
-    <div className="space-y-6">
-      <button 
-        onClick={() => setCurrentScreen('dashboard')}
-        className="text-purple-400 hover:text-purple-300 flex items-center gap-2"
-      >
-        <ChevronRight className="w-4 h-4 rotate-180" /> Back to Dashboard
-      </button>
+  const PropertyDetailsScreen = ({ setCurrentScreen }) => {
+    // Use selectedProperty or fall back to default
+    const property = selectedProperty || {
+      name: "Sunset Boulevard Apartment",
+      proplockId: "US-PROP-2024-8534",
+      location: "Los Angeles, CA",
+      country: "USA",
+      countryCode: "US",
+      flag: "🇺🇸",
+      size: "1,250 sq ft",
+      value: "850000",
+      currency: "$",
+      acquired: "Mar 15, 2019",
+      previousOwner: "John Davidson (2015-2019)",
+      nextOfKin: "David Mitchell (Son)"
+    };
 
-      <div className="bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-xl p-6 border border-purple-500/30">
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-2">Sunset Boulevard Apartment</h2>
-            <p className="text-gray-400 flex items-center gap-2">
-              <MapPin className="w-4 h-4" /> 
-              1234 Sunset Blvd, Los Angeles, CA 90028
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-gray-400">Current Value</p>
-            <p className="text-3xl font-bold text-purple-400">$850,000</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-black/30 rounded-lg p-3">
-            <p className="text-xs text-gray-400">Type</p>
-            <p className="text-white font-semibold">Apartment</p>
-          </div>
-          <div className="bg-black/30 rounded-lg p-3">
-            <p className="text-xs text-gray-400">Size</p>
-            <p className="text-white font-semibold">1,250 sq ft</p>
-          </div>
-          <div className="bg-black/30 rounded-lg p-3">
-            <p className="text-xs text-gray-400">Purchased</p>
-            <p className="text-white font-semibold">2019</p>
-          </div>
-          <div className="bg-black/30 rounded-lg p-3">
-            <p className="text-xs text-gray-400">PropLock ID</p>
-            <p className="text-purple-400 font-semibold text-xs">PLK-PROP-2024-8534</p>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-white">Ownership History</h3>
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 bg-black/30 rounded-lg p-3">
-              <CheckCircle className="w-5 h-5 text-green-400" />
-              <div className="flex-1">
-                <p className="text-white">Current Owner: Sarah Mitchell</p>
-                <p className="text-xs text-gray-400">Since March 15, 2019</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-black/30 rounded-lg p-3 opacity-60">
-              <Clock className="w-5 h-5 text-gray-400" />
-              <div className="flex-1">
-                <p className="text-gray-300">Previous: John Davidson</p>
-                <p className="text-xs text-gray-400">2015 - 2019</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Next of Kin Information */}
-        <div className="mt-4 bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
-          <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
-            <Users className="w-5 h-5 text-blue-400" />
-            Registered Next of Kin
-          </h4>
-          <p className="text-sm text-gray-300">David Mitchell (Son) - PLK-2024-DM-7829</p>
-          <p className="text-xs text-gray-400 mt-1">Auto-transfer enabled upon death certificate</p>
-        </div>
-
+    return (
+      <div className="space-y-6">
         <button 
-          onClick={() => setCurrentScreen('transferInit')}
-          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all flex items-center justify-center gap-2 mt-6"
+          onClick={() => setCurrentScreen('dashboard')}
+          className="text-purple-400 hover:text-purple-300 flex items-center gap-2"
         >
-          <Send className="w-5 h-5" />
-          Transfer Property
+          <ChevronRight className="w-4 h-4 rotate-180" /> Back to Dashboard
         </button>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white/5 rounded-xl p-4 border border-gray-700">
-          <div className="flex items-center justify-between mb-2">
-            <FileText className="w-6 h-6 text-purple-400" />
-            <Link className="w-4 h-4 text-green-400" />
+        <div className="bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-xl p-6 border border-purple-500/30">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">{property.name}</h2>
+              <p className="text-gray-400 flex items-center gap-2">
+                <MapPin className="w-4 h-4" /> 
+                {property.location}
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-400">Current Value</p>
+              <p className="text-3xl font-bold text-purple-400">{property.currency}{parseInt(property.value).toLocaleString()}</p>
+            </div>
           </div>
-          <p className="text-white font-semibold">Property Deed</p>
-          <p className="text-xs text-gray-400">Government API Connected</p>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div className="bg-black/30 rounded-lg p-3">
+              <p className="text-xs text-gray-400">Type</p>
+              <p className="text-white font-semibold">{property.name.includes('Apartment') ? 'Apartment' : property.name.includes('Estate') ? 'Estate' : 'Residence'}</p>
+            </div>
+            <div className="bg-black/30 rounded-lg p-3">
+              <p className="text-xs text-gray-400">Size</p>
+              <p className="text-white font-semibold">{property.size}</p>
+            </div>
+            <div className="bg-black/30 rounded-lg p-3">
+              <p className="text-xs text-gray-400">Purchased</p>
+              <p className="text-white font-semibold">{property.acquired.split(' ')[2]}</p>
+            </div>
+            <div className="bg-black/30 rounded-lg p-3">
+              <p className="text-xs text-gray-400">PropLock ID</p>
+              <p className="text-purple-400 font-semibold text-xs flex items-center gap-1">
+                <span>{property.flag}</span> {property.proplockId}
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-white">Ownership History</h3>
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 bg-black/30 rounded-lg p-3">
+                <CheckCircle className="w-5 h-5 text-green-400" />
+                <div className="flex-1">
+                  <p className="text-white">Current Owner: Sarah Mitchell</p>
+                  <p className="text-xs text-gray-400">Since {property.acquired}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-black/30 rounded-lg p-3 opacity-60">
+                <Clock className="w-5 h-5 text-gray-400" />
+                <div className="flex-1">
+                  <p className="text-gray-300">Previous: {property.previousOwner}</p>
+                  <p className="text-xs text-gray-400">Historical owner</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Next of Kin Information */}
+          <div className="mt-4 bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
+            <h4 className="text-white font-semibold mb-2 flex items-center gap-2">
+              <Users className="w-5 h-5 text-blue-400" />
+              Registered Next of Kin
+            </h4>
+            <p className="text-sm text-gray-300">{property.nextOfKin} - {property.flag} {property.countryCode}-USER-{property.nextOfKin?.split(' ')[0]?.substring(0,2)?.toUpperCase()}-{Math.floor(Math.random() * 9000) + 1000}</p>
+            <p className="text-xs text-gray-400 mt-1">Auto-transfer enabled upon death certificate</p>
+          </div>
+
+          <button 
+            onClick={() => setCurrentScreen('transferInit')}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all flex items-center justify-center gap-2 mt-6"
+          >
+            <Send className="w-5 h-5" />
+            Transfer Property
+          </button>
         </div>
-        <div className="bg-white/5 rounded-xl p-4 border border-gray-700">
-          <div className="flex items-center justify-between mb-2">
-            <FileCheck className="w-6 h-6 text-green-400" />
-            <Link className="w-4 h-4 text-green-400" />
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white/5 rounded-xl p-4 border border-gray-700">
+            <div className="flex items-center justify-between mb-2">
+              <FileText className="w-6 h-6 text-purple-400" />
+              <Link className="w-4 h-4 text-green-400" />
+            </div>
+            <p className="text-white font-semibold">Property Deed</p>
+            <p className="text-xs text-gray-400">Government API Connected</p>
           </div>
-          <p className="text-white font-semibold">Tax Records</p>
-          <p className="text-xs text-gray-400">Tax API Verified</p>
-        </div>
-        <div className="bg-white/5 rounded-xl p-4 border border-gray-700">
-          <div className="flex items-center justify-between mb-2">
-            <Shield className="w-6 h-6 text-blue-400" />
-            <Link className="w-4 h-4 text-green-400" />
+          <div className="bg-white/5 rounded-xl p-4 border border-gray-700">
+            <div className="flex items-center justify-between mb-2">
+              <FileCheck className="w-6 h-6 text-green-400" />
+              <Link className="w-4 h-4 text-green-400" />
+            </div>
+            <p className="text-white font-semibold">Tax Records</p>
+            <p className="text-xs text-gray-400">Tax API Verified</p>
           </div>
-          <p className="text-white font-semibold">Insurance</p>
-          <p className="text-xs text-gray-400">Insurance API Active</p>
+          <div className="bg-white/5 rounded-xl p-4 border border-gray-700">
+            <div className="flex items-center justify-between mb-2">
+              <Shield className="w-6 h-6 text-blue-400" />
+              <Link className="w-4 h-4 text-green-400" />
+            </div>
+            <p className="text-white font-semibold">Insurance</p>
+            <p className="text-xs text-gray-400">Insurance API Active</p>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const TransferInitScreen = ({ setCurrentScreen }) => {
     const [transferType, setTransferType] = useState('gift');
@@ -439,11 +494,22 @@ const PropLockPrototype = () => {
     ]);
     const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
-    const propertySize = 1250;
+    // Use selectedProperty or fall back to default
+    const property = selectedProperty || {
+      name: "Sunset Boulevard Apartment",
+      proplockId: "US-PROP-2024-8534",
+      location: "Los Angeles, CA",
+      size: "1,250 sq ft",
+      value: "850000",
+      currency: "$",
+      flag: "🇺🇸"
+    };
+
+    const propertySize = parseInt(property.size.replace(/[^\d]/g, '')) || 1250;
     
     // Generate new property IDs for splits
     const generateNewPropertyId = (index) => {
-      return `PLK-PROP-2025-${Math.floor(Math.random() * 9000) + 1000}`;
+      return `${property.proplockId?.split('-')[0]}-PROP-2025-${Math.floor(Math.random() * 9000) + 1000}`;
     };
 
     const addRecipient = () => {
@@ -519,9 +585,11 @@ const PropLockPrototype = () => {
         <div className="space-y-4">
           <div className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl p-6 border border-purple-500/30">
             <h3 className="text-lg font-semibold text-white mb-2">Property Details</h3>
-            <p className="text-gray-300">Sunset Boulevard Apartment</p>
-            <p className="text-sm text-gray-400">Los Angeles, CA • {propertySize} sq ft • $850,000</p>
-            <p className="text-xs text-purple-400 font-mono mt-1">PropLock ID: PLK-PROP-2024-8534</p>
+            <p className="text-gray-300">{property.name}</p>
+            <p className="text-sm text-gray-400">{property.location} • {property.size} • {property.currency}{parseInt(property.value).toLocaleString()}</p>
+            <p className="text-xs text-purple-400 font-mono mt-1 flex items-center gap-1">
+              <span>{property.flag}</span> PropLock ID: {property.proplockId}
+            </p>
           </div>
 
           <div>
@@ -575,7 +643,7 @@ const PropLockPrototype = () => {
                         <input
                           type="text"
                           className="w-full bg-white/10 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm font-mono"
-                          placeholder="PLK-XXXX-XX-XXXX"
+                          placeholder="XX-USER-XX-XXXX"
                           value={recipient.proplockId}
                           onChange={(e) => updateRecipient(index, 'proplockId', e.target.value)}
                         />
@@ -593,7 +661,7 @@ const PropLockPrototype = () => {
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-gray-400">Area (sq ft)</label>
+                        <label className="text-xs text-gray-400">Area ({property.size.includes('sqm') ? 'sqm' : 'sq ft'})</label>
                         <input
                           type="text"
                           className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-gray-300 text-sm"
@@ -620,7 +688,7 @@ const PropLockPrototype = () => {
                     <Users className="w-4 h-4" /> Add Recipient
                   </button>
                   <div className={`text-sm ${totalPercentage === 100 ? 'text-green-400' : totalPercentage > 100 ? 'text-red-400' : 'text-yellow-400'}`}>
-                    Total: {totalPercentage}% of {propertySize} sq ft
+                    Total: {totalPercentage}% of {propertySize} {property.size.includes('sqm') ? 'sqm' : 'sq ft'}
                   </div>
                 </div>
                 
@@ -676,7 +744,7 @@ const PropLockPrototype = () => {
                 className={`bg-white/5 rounded-xl p-4 border-2 cursor-pointer ${transferType === 'death' ? 'border-purple-500' : 'border-gray-700'}`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <Building2 className="w-6 h-6 text-red-400" />
+                  <Hospital className="w-6 h-6 text-red-400" />
                   <div className={`w-4 h-4 rounded-full ${transferType === 'death' ? 'bg-purple-500' : 'border border-gray-600'}`}></div>
                 </div>
                 <p className="text-white font-semibold">Death Certificate</p>
@@ -697,7 +765,8 @@ const PropLockPrototype = () => {
     );
   };
 
-  const BiometricScreen = ({ setCurrentScreen }) => {
+  const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
+    const [scanning, setScanning] = useState(false);
     const [currentStep, setCurrentStep] = useState('selection');
     const [selectedBiometric, setSelectedBiometric] = useState('');
     const [emergencyMode, setEmergencyMode] = useState(false);
@@ -710,13 +779,16 @@ const PropLockPrototype = () => {
     const handleBiometricSelection = (type) => {
       setSelectedBiometric(type);
       setCurrentStep('scanning');
+      setScanning(true);
       
       setTimeout(() => {
         setVerificationSteps(prev => ({ ...prev, [type]: true }));
+        setScanning(false);
         
         // Check if all required biometrics are verified (at least 2 out of 3)
         const verifiedCount = Object.values({ ...verificationSteps, [type]: true }).filter(v => v).length;
         if (verifiedCount >= 2) {
+          setBiometricVerified(true);
           setTimeout(() => setCurrentScreen('recipient'), 1500);
         } else {
           setCurrentStep('selection');
@@ -907,8 +979,8 @@ const PropLockPrototype = () => {
             <input 
               type="text" 
               className="flex-1 bg-white/5 border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none font-mono"
-              placeholder="PLK-2024-XX-XXXX"
-              defaultValue="PLK-2024-DM-7829"
+              placeholder="XX-USER-XX-XXXX"
+              defaultValue="US-USER-DM-7829"
             />
             <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl transition-colors">
               Search
@@ -929,7 +1001,9 @@ const PropLockPrototype = () => {
             </div>
             <div className="flex-1">
               <p className="text-white font-semibold text-lg">David Mitchell</p>
-              <p className="text-blue-400 font-mono text-sm">PLK-2024-DM-7829</p>
+              <p className="text-blue-400 font-mono text-sm flex items-center gap-2">
+                <span>🇺🇸</span> US-USER-DM-7829
+              </p>
               <p className="text-xs text-gray-400 mt-1">Verified Member • KYC Complete</p>
             </div>
             <div className="text-right">
@@ -971,7 +1045,17 @@ const PropLockPrototype = () => {
 
   const GovernmentFeesScreen = ({ setCurrentScreen }) => {
     const [paymentMethod, setPaymentMethod] = useState('integrated');
-    const propertyValue = 850000;
+    
+    // Use selectedProperty or fall back to default
+    const property = selectedProperty || {
+      name: "Sunset Boulevard Apartment",
+      value: "850000",
+      currency: "$",
+      countryCode: "US",
+      flag: "🇺🇸"
+    };
+    
+    const propertyValue = parseInt(property.value);
     const stampDuty = propertyValue * 0.01;
     const registrationFee = 500;
     const processingFee = 150;
@@ -979,6 +1063,23 @@ const PropLockPrototype = () => {
     const totalFees = stampDuty + registrationFee + processingFee + propLockFee;
     const govRevenue = Math.round(totalFees * 0.85);
     const propLockRevenue = Math.round(totalFees * 0.15);
+
+    // Country-specific labels
+    const getCountryLabel = () => {
+      switch(property.countryCode) {
+        case 'UK': return 'United Kingdom Digital Stamp Requirements';
+        case 'JP': return 'Japan Digital Stamp Requirements';
+        default: return 'United States Digital Stamp Requirements';
+      }
+    };
+
+    const getCountrySystem = () => {
+      switch(property.countryCode) {
+        case 'UK': return 'UK Tax System';
+        case 'JP': return 'JP Tax System';
+        default: return 'US Tax System';
+      }
+    };
 
     return (
       <div className="space-y-6">
@@ -990,7 +1091,7 @@ const PropLockPrototype = () => {
         </button>
 
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">Government Fees & PropLock Revenue</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">Government Digital Stamp Fees & Platform Fees</h2>
           <p className="text-gray-400">Government partnership model - PropLock earns from fee sharing</p>
           <p className="text-green-400 text-sm mt-1">✓ FREE for all citizens - Government pays infrastructure costs</p>
         </div>
@@ -998,27 +1099,27 @@ const PropLockPrototype = () => {
         <div className="bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-xl p-6 border border-blue-500/30">
           <div className="flex items-center gap-3 mb-4">
             <Building className="w-6 h-6 text-blue-400" />
-            <h3 className="text-lg font-semibold text-white">California State Requirements</h3>
-            <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded ml-auto">
-              {selectedCountry} Tax System
+            <h3 className="text-lg font-semibold text-white">{getCountryLabel()}</h3>
+            <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded ml-auto flex items-center gap-1">
+              <span>{property.flag}</span> {getCountrySystem()}
             </span>
           </div>
           
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-white">Stamp Duty (1% for gifts)</p>
-                <p className="text-xs text-gray-400">Based on property value of ${propertyValue.toLocaleString()}</p>
+                <p className="text-white">Digital Stamp Duty (1% for gifts)</p>
+                <p className="text-xs text-gray-400">Based on property value of {property.currency}{propertyValue.toLocaleString()}</p>
               </div>
-              <p className="text-white font-semibold">${stampDuty.toLocaleString()}</p>
+              <p className="text-white font-semibold">{property.currency}{stampDuty.toLocaleString()}</p>
             </div>
             
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-white">Registration Fee</p>
+                <p className="text-white">Digital Registration Fee</p>
                 <p className="text-xs text-gray-400">County recorder office</p>
               </div>
-              <p className="text-white font-semibold">${registrationFee}</p>
+              <p className="text-white font-semibold">{property.currency}{registrationFee}</p>
             </div>
             
             <div className="flex justify-between items-center">
@@ -1026,21 +1127,21 @@ const PropLockPrototype = () => {
                 <p className="text-white">Digital Processing Fee</p>
                 <p className="text-xs text-gray-400">Government digital infrastructure</p>
               </div>
-              <p className="text-white font-semibold">${processingFee}</p>
+              <p className="text-white font-semibold">{property.currency}{processingFee}</p>
             </div>
 
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-white">PropLock Service Fee</p>
-                <p className="text-xs text-gray-400">Platform & blockchain services</p>
+                <p className="text-white">PropLock Platform Fee</p>
+                <p className="text-xs text-gray-400">Platform services & blockchain</p>
               </div>
-              <p className="text-purple-400 font-semibold">${propLockFee}</p>
+              <p className="text-purple-400 font-semibold">{property.currency}{propLockFee}</p>
             </div>
             
             <div className="border-t border-gray-600 pt-3">
               <div className="flex justify-between items-center">
                 <p className="text-white font-semibold">Total Fees</p>
-                <p className="text-2xl font-bold text-blue-400">${totalFees.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-blue-400">{property.currency}{totalFees.toLocaleString()}</p>
               </div>
             </div>
           </div>
@@ -1052,10 +1153,10 @@ const PropLockPrototype = () => {
             <div className="flex items-start gap-3">
               <Building className="w-5 h-5 text-green-400 mt-0.5" />
               <div>
-                <p className="text-green-400 font-semibold text-sm">Government Revenue</p>
-                <p className="text-2xl font-bold text-white mt-1">${govRevenue}</p>
+                <p className="text-green-400 font-semibold text-sm">Government Digital Stamp Revenue</p>
+                <p className="text-2xl font-bold text-white mt-1">{property.currency}{govRevenue}</p>
                 <p className="text-xs text-gray-300 mt-1">
-                  85% of total fees • Real-time collection
+                  85% of total fees • Government earns from all sales and purchase deals automatically
                 </p>
               </div>
             </div>
@@ -1065,25 +1166,24 @@ const PropLockPrototype = () => {
             <div className="flex items-start gap-3">
               <Key className="w-5 h-5 text-purple-400 mt-0.5" />
               <div>
-                <p className="text-purple-400 font-semibold text-sm">PropLock Revenue</p>
-                <p className="text-2xl font-bold text-white mt-1">${propLockRevenue}</p>
+                <p className="text-purple-400 font-semibold text-sm">PropLock Platform Fees</p>
+                <p className="text-2xl font-bold text-white mt-1">{property.currency}{propLockRevenue}</p>
                 <p className="text-xs text-gray-300 mt-1">
-                  15% partnership share • Per transaction
+                  15% partnership share • Collected separately without interference
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Government Infrastructure Note */}
-        <div className="bg-yellow-500/10 rounded-xl p-4 border border-yellow-500/30">
+        {/* Separate Collection Notice */}
+        <div className="bg-blue-500/10 rounded-xl p-4 border border-blue-500/30">
           <div className="flex items-start gap-3">
-            <Database className="w-5 h-5 text-yellow-400 mt-0.5" />
+            <Shield className="w-5 h-5 text-blue-400 mt-0.5" />
             <div>
-              <p className="text-yellow-400 font-semibold text-sm">Government Data Center</p>
+              <p className="text-blue-400 font-semibold text-sm">Automated Fee Separation</p>
               <p className="text-xs text-gray-300 mt-1">
-                {selectedCountry} government maintains their own backend infrastructure. 
-                PropLock provides annual maintenance worth billions for continuous support.
+                Platform fees are automatically separated from government digital stamp fees through smart contract technology, ensuring transparent and interference-free collection for both parties.
               </p>
             </div>
           </div>
@@ -1127,7 +1227,7 @@ const PropLockPrototype = () => {
           className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all flex items-center justify-center gap-2"
         >
           <CheckCircle className="w-5 h-5" />
-          Pay ${totalFees.toLocaleString()} & Complete Transfer
+          Pay {property.currency}{totalFees.toLocaleString()} & Complete Transfer
         </button>
       </div>
     );
@@ -1191,89 +1291,140 @@ const PropLockPrototype = () => {
     </div>
   );
 
-  const CompletionScreen = ({ setCurrentScreen }) => (
-    <div className="text-center space-y-6">
-      <div className="w-24 h-24 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center mx-auto animate-bounce">
-        <CheckCircle className="w-16 h-16 text-white" />
-      </div>
+  const CompletionScreen = ({ setCurrentScreen }) => {
+    const [showNewOwner, setShowNewOwner] = useState(true);
+    
+    // Use selectedProperty or fall back to default
+    const property = selectedProperty || {
+      name: "Sunset Boulevard Apartment",
+      proplockId: "US-PROP-2024-8534",
+      flag: "🇺🇸",
+      countryCode: "US"
+    };
+    
+    return (
+      <div className="text-center space-y-6">
+        <div className="w-24 h-24 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full flex items-center justify-center mx-auto animate-bounce">
+          <CheckCircle className="w-16 h-16 text-white" />
+        </div>
 
-      <div>
-        <h2 className="text-3xl font-bold text-white mb-2">Transfer Complete!</h2>
-        <p className="text-gray-400">Property ownership has been successfully transferred</p>
-      </div>
+        <div>
+          <h2 className="text-3xl font-bold text-white mb-2">Transfer Complete!</h2>
+          <p className="text-gray-400">Property ownership has been successfully transferred</p>
+        </div>
 
-      <div className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-xl p-6 border border-green-500/30 max-w-md mx-auto">
-        <h3 className="text-lg font-semibold text-white mb-4">Transfer Confirmation</h3>
-        <div className="bg-black/30 rounded-lg p-4 space-y-2 text-left">
-          <div className="flex justify-between">
-            <p className="text-gray-400 text-sm">Property</p>
-            <p className="text-white text-sm font-semibold">Sunset Boulevard Apt</p>
+        {showNewOwner && (
+          <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-xl p-6 border border-blue-500/30 max-w-md mx-auto">
+            <h3 className="text-lg font-semibold text-white mb-4">New Owner Details</h3>
+            <div className="flex items-center gap-4 mb-4">
+              <div className="w-20 h-20 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full flex items-center justify-center">
+                <User className="w-10 h-10 text-white" />
+              </div>
+              <div className="text-left">
+                <p className="text-white font-semibold text-lg">David Mitchell</p>
+                <p className="text-blue-400 font-mono text-sm flex items-center gap-2">
+                  <span className="text-lg">{property.flag}</span> {property.countryCode}-USER-DM-7829
+                </p>
+                <p className="text-xs text-gray-400 mt-1">Transfer completed at {new Date().toLocaleTimeString()}</p>
+              </div>
+            </div>
+            <div className="bg-black/30 rounded-lg p-3 text-left">
+              <p className="text-xs text-gray-400">Property Received:</p>
+              <p className="text-white font-semibold">{property.name}</p>
+              <p className="text-purple-400 text-sm font-mono mt-1 flex items-center gap-2">
+                <span>{property.flag}</span> New ID: {property.countryCode}-PROP-2025-9247
+              </p>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <p className="text-gray-400 text-sm">Previous Owner</p>
-            <p className="text-white text-sm font-semibold">Sarah Mitchell</p>
-          </div>
-          <div className="flex justify-between">
-            <p className="text-gray-400 text-sm">New Owner</p>
-            <p className="text-white text-sm font-semibold">David Mitchell</p>
-          </div>
-          <div className="flex justify-between">
-            <p className="text-gray-400 text-sm">New Property ID</p>
-            <p className="text-purple-400 text-sm font-mono">PLK-PROP-2025-9247</p>
-          </div>
-          <div className="border-t border-gray-600 pt-2 mt-2">
+        )}
+
+        <div className="bg-gradient-to-r from-green-600/20 to-emerald-600/20 rounded-xl p-6 border border-green-500/30 max-w-md mx-auto">
+          <h3 className="text-lg font-semibold text-white mb-4">Transfer Confirmation</h3>
+          <div className="bg-black/30 rounded-lg p-4 space-y-2 text-left">
             <div className="flex justify-between">
-              <p className="text-gray-400 text-sm">Government Revenue</p>
-              <p className="text-blue-400 text-sm font-semibold">$7,735 (85%)</p>
+              <p className="text-gray-400 text-sm">Property</p>
+              <p className="text-white text-sm font-semibold">{property.name.length > 20 ? property.name.substring(0, 20) + '...' : property.name}</p>
             </div>
             <div className="flex justify-between">
-              <p className="text-gray-400 text-sm">PropLock Revenue</p>
-              <p className="text-green-400 text-sm font-semibold">$1,365 (15%)</p>
+              <p className="text-gray-400 text-sm">Previous Owner</p>
+              <p className="text-white text-sm font-semibold">Sarah Mitchell</p>
+            </div>
+            <div className="flex justify-between">
+              <p className="text-gray-400 text-sm">New Owner</p>
+              <p className="text-white text-sm font-semibold">David Mitchell</p>
+            </div>
+            <div className="flex justify-between">
+              <p className="text-gray-400 text-sm">New Property ID</p>
+              <p className="text-purple-400 text-sm font-mono flex items-center gap-1">
+                <span>{property.flag}</span> {property.countryCode}-PROP-2025-9247
+              </p>
+            </div>
+            <div className="border-t border-gray-600 pt-2 mt-2">
+              <div className="flex justify-between">
+                <p className="text-gray-400 text-sm">Government Digital Stamp Fees</p>
+                <p className="text-blue-400 text-sm font-semibold">85% Share</p>
+              </div>
+              <div className="flex justify-between">
+                <p className="text-gray-400 text-sm">PropLock Platform Fees</p>
+                <p className="text-green-400 text-sm font-semibold">15% Share</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="bg-blue-500/10 rounded-xl p-4 border border-blue-500/30 max-w-md mx-auto">
-        <div className="flex items-start gap-3">
-          <Shield className="w-5 h-5 text-blue-400 mt-0.5" />
-          <div className="text-left">
-            <p className="text-blue-400 font-semibold text-sm">Security Notice</p>
-            <p className="text-xs text-gray-300 mt-1">
-              Property instantly transferred to recipient's PropLock account. 
-              No downloads or documents needed - fully digital and secure.
-            </p>
+        <div className="bg-blue-500/10 rounded-xl p-4 border border-blue-500/30 max-w-md mx-auto">
+          <div className="flex items-start gap-3">
+            <Shield className="w-5 h-5 text-blue-400 mt-0.5" />
+            <div className="text-left">
+              <p className="text-blue-400 font-semibold text-sm">Security Notice</p>
+              <p className="text-xs text-gray-300 mt-1">
+                Property instantly transferred to recipient's PropLock account. 
+                No downloads or documents needed - fully digital and secure.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="bg-green-500/10 rounded-xl p-4 border border-green-500/30 max-w-md mx-auto">
-        <div className="flex items-start gap-3">
-          <Wifi className="w-5 h-5 text-green-400 mt-0.5" />
-          <div className="text-left">
-            <p className="text-green-400 font-semibold text-sm">Real-Time Government Updates</p>
-            <p className="text-xs text-gray-300 mt-1">
-              All relevant government agencies notified via API. 
-              Tax records, land registry, and insurance updated automatically.
-            </p>
+        <div className="bg-green-500/10 rounded-xl p-4 border border-green-500/30 max-w-md mx-auto">
+          <div className="flex items-start gap-3">
+            <Wifi className="w-5 h-5 text-green-400 mt-0.5" />
+            <div className="text-left">
+              <p className="text-green-400 font-semibold text-sm">Real-Time Government Updates</p>
+              <p className="text-xs text-gray-300 mt-1">
+                All relevant government agencies notified via API. 
+                Tax records, land registry, and insurance updated automatically.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <button 
-        onClick={() => setCurrentScreen('dashboard')}
-        className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-3 px-8 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all"
-      >
-        Return to Dashboard
-      </button>
-    </div>
-  );
+        {showNewOwner ? (
+          <button 
+            onClick={() => setShowNewOwner(false)}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-3 px-8 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+          >
+            Continue
+          </button>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-400">Ready to return to your dashboard?</p>
+            <button 
+              onClick={() => setCurrentScreen('dashboard')}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold py-3 px-8 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all"
+            >
+              Return to Dashboard
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const screens = {
     dashboard: <DashboardScreen setCurrentScreen={setCurrentScreen} />,
     propertyDetails: <PropertyDetailsScreen setCurrentScreen={setCurrentScreen} />,
     transferInit: <TransferInitScreen setCurrentScreen={setCurrentScreen} />,
-    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} />,
+    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} setBiometricVerified={setBiometricVerified} />,
     recipient: <RecipientScreen setCurrentScreen={setCurrentScreen} />,
     governmentFees: <GovernmentFeesScreen setCurrentScreen={setCurrentScreen} />,
     processing: <ProcessingScreen progress={transferProgress} />,
