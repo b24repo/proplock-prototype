@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Shield, CheckCircle, AlertCircle, Camera, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, Check, User, MapPin, DollarSign, Building, ArrowRight, Loader, CreditCard, Wallet, Bell, Building2, Fingerprint, Eye, Wifi, Globe, Database, Link } from 'lucide-react';
+import { FileText, Shield, CheckCircle, AlertCircle, Camera, FileCheck, Send, Clock, TrendingUp, Key, Users, ChevronRight, User, MapPin, DollarSign, Building, Loader, CreditCard, Wallet, Building2, Fingerprint, Eye, Wifi, Globe, Database, Link } from 'lucide-react';
 
 const PropLockPrototype = () => {
   const [currentScreen, setCurrentScreen] = useState('dashboard');
-  const [documentsUploaded, setDocumentsUploaded] = useState(false);
   const [transferProgress, setTransferProgress] = useState(0);
-  const [selectedCountry, setSelectedCountry] = useState('US');
   const [selectedProperty, setSelectedProperty] = useState(null);
 
   // Reset progress when returning to dashboard
@@ -783,7 +781,7 @@ const PropLockPrototype = () => {
         // Check if all required biometrics are verified (at least 2 out of 3)
         const verifiedCount = Object.values({ ...verificationSteps, [type]: true }).filter(v => v).length;
         if (verifiedCount >= 2) {
-          setTimeout(() => setCurrentScreen('recipient'), 1500);
+          setCurrentScreen('recipient');
         } else {
           setCurrentStep('selection');
         }
