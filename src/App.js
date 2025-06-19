@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Shield, CheckCircle, AlertCircle, Camera, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, Check, User, MapPin, DollarSign, Building, ArrowRight, Loader, CreditCard, Wallet, Bell, Hospital, Fingerprint, Eye, Wifi, Globe, Database, Link } from 'lucide-react';
+import { FileText, Shield, CheckCircle, AlertCircle, Camera, Upload, FileCheck, Send, Clock, Download, Share2, TrendingUp, Key, Users, Activity, ChevronRight, Check, User, MapPin, DollarSign, Building, ArrowRight, Loader, CreditCard, Wallet, Bell, Building2, Fingerprint, Eye, Wifi, Globe, Database, Link } from 'lucide-react';
 
 const PropLockPrototype = () => {
   const [currentScreen, setCurrentScreen] = useState('dashboard');
-  const [biometricVerified, setBiometricVerified] = useState(false);
   const [documentsUploaded, setDocumentsUploaded] = useState(false);
   const [transferProgress, setTransferProgress] = useState(0);
   const [selectedCountry, setSelectedCountry] = useState('US');
@@ -13,7 +12,6 @@ const PropLockPrototype = () => {
   useEffect(() => {
     if (currentScreen === 'dashboard') {
       setTransferProgress(0);
-      setBiometricVerified(false);
     }
   }, [currentScreen]);
 
@@ -219,7 +217,7 @@ const PropLockPrototype = () => {
           <h3 className="text-sm font-semibold text-purple-400 mb-2">PropLock Registration Scenarios:</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-300">
             <div className="flex items-start gap-2">
-              <Hospital className="w-4 h-4 text-pink-400 mt-0.5" />
+              <Building2 className="w-4 h-4 text-pink-400 mt-0.5" />
               <div>
                 <span className="text-white font-semibold">Birth Registration:</span> Hospitals create PropLock ID for newborns upon birth certificate generation
               </div>
@@ -280,7 +278,7 @@ const PropLockPrototype = () => {
               <p className="text-xs text-gray-400">Gift or sale to family</p>
             </div>
             <div className="bg-gradient-to-r from-red-600/10 to-orange-600/10 rounded-xl p-4 border border-red-500/30">
-              <Hospital className="w-6 h-6 text-red-400 mb-2" />
+              <Building2 className="w-6 h-6 text-red-400 mb-2" />
               <p className="text-white font-semibold text-sm">Hospital Death Certificate</p>
               <p className="text-xs text-gray-400">Auto-triggered transfer to next of kin</p>
             </div>
@@ -744,7 +742,7 @@ const PropLockPrototype = () => {
                 className={`bg-white/5 rounded-xl p-4 border-2 cursor-pointer ${transferType === 'death' ? 'border-purple-500' : 'border-gray-700'}`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <Hospital className="w-6 h-6 text-red-400" />
+                  <Building2 className="w-6 h-6 text-red-400" />
                   <div className={`w-4 h-4 rounded-full ${transferType === 'death' ? 'bg-purple-500' : 'border border-gray-600'}`}></div>
                 </div>
                 <p className="text-white font-semibold">Death Certificate</p>
@@ -765,8 +763,7 @@ const PropLockPrototype = () => {
     );
   };
 
-  const BiometricScreen = ({ setCurrentScreen, setBiometricVerified }) => {
-    const [scanning, setScanning] = useState(false);
+  const BiometricScreen = ({ setCurrentScreen }) => {
     const [currentStep, setCurrentStep] = useState('selection');
     const [selectedBiometric, setSelectedBiometric] = useState('');
     const [emergencyMode, setEmergencyMode] = useState(false);
@@ -779,16 +776,13 @@ const PropLockPrototype = () => {
     const handleBiometricSelection = (type) => {
       setSelectedBiometric(type);
       setCurrentStep('scanning');
-      setScanning(true);
       
       setTimeout(() => {
         setVerificationSteps(prev => ({ ...prev, [type]: true }));
-        setScanning(false);
         
         // Check if all required biometrics are verified (at least 2 out of 3)
         const verifiedCount = Object.values({ ...verificationSteps, [type]: true }).filter(v => v).length;
         if (verifiedCount >= 2) {
-          setBiometricVerified(true);
           setTimeout(() => setCurrentScreen('recipient'), 1500);
         } else {
           setCurrentStep('selection');
@@ -1424,7 +1418,7 @@ const PropLockPrototype = () => {
     dashboard: <DashboardScreen setCurrentScreen={setCurrentScreen} />,
     propertyDetails: <PropertyDetailsScreen setCurrentScreen={setCurrentScreen} />,
     transferInit: <TransferInitScreen setCurrentScreen={setCurrentScreen} />,
-    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} setBiometricVerified={setBiometricVerified} />,
+    biometric: <BiometricScreen setCurrentScreen={setCurrentScreen} />,
     recipient: <RecipientScreen setCurrentScreen={setCurrentScreen} />,
     governmentFees: <GovernmentFeesScreen setCurrentScreen={setCurrentScreen} />,
     processing: <ProcessingScreen progress={transferProgress} />,
